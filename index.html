@@ -160,6 +160,17 @@
   }
   .toast.show { transform: translate(-50%, 0); }
 
+  /* מצב בחירה: השורה העליונה מתקפלת והשמות הופכים לריבועים */
+  .fold { max-height: 140px; transition: max-height .45s ease, opacity .3s ease, margin .45s ease, padding .45s ease, border-width .45s; }
+  .picking .fold { max-height: 0; opacity: 0; margin: 0; padding-top: 0; padding-bottom: 0; border-width: 0; overflow: hidden; pointer-events: none; }
+  .picking .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .picking .chip {
+    justify-content: center; text-align: center; padding: 22px 10px; border-radius: 18px;
+    font-size: 18px; font-weight: 800; animation: tile .45s cubic-bezier(.3,1.5,.5,1) backwards;
+  }
+  .picking .chip button { display: none; }
+  @keyframes tile { from { transform: translateY(-30px) scale(.6); opacity: 0; } }
+
   canvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 </style>
 </head>
@@ -171,14 +182,14 @@
   <h1 class="logo">SPLIT</h1>
   <p class="tag">זורקים שמות, הגורל מחליט. בלי ויכוחים.</p>
 
-  <section class="glass">
-    <div class="modes" id="modes">
+  <section class="glass" id="panel">
+    <div class="modes fold" id="modes">
       <div class="pill"></div>
       <button class="on" data-mode="teams" onclick="setMode('teams')">חלק לקבוצות</button>
       <button data-mode="pick" onclick="setMode('pick')">בחר אחד</button>
     </div>
 
-    <div class="opt" id="teamsOpt">
+    <div class="opt fold" id="teamsOpt">
       <span>כמה קבוצות?</span>
       <div class="numwrap">
         <span class="hint" id="hint"></span>
@@ -186,16 +197,16 @@
       </div>
     </div>
 
-    <div class="input-row">
+    <div class="input-row fold">
       <input id="name" placeholder="הוסף שם…" autocomplete="off">
       <button class="add" onclick="addPlayer()" aria-label="הוסף">+</button>
     </div>
-    <div class="meta">
+    <div class="meta fold">
       <span><span class="count" id="count">0</span> משתתפים</span>
       <button class="clear" onclick="clearAll()">נקה הכול</button>
     </div>
     <div class="chips" id="chips"></div>
-    <button class="go" id="go" onclick="run()">תחלק אותנו</button>
+    <button class="go fold" id="go" onclick="run()">תחלק אותנו</button>
   </section>
 
   <div id="result"></div>
@@ -368,19 +379,24 @@
     const go = document.getElementById('go');
     go.disabled = true;
 
+    const panel = document.getElementById('panel');
     const chips = [...document.querySelectorAll('.chip')];
+    chips.forEach((c, i) => c.style.animationDelay = (i * 0.05) + 's');
+    panel.classList.add('picking');
+
     const winner = Math.floor(Math.random() * players.length);
     const rounds = 3 * players.length + winner; // כמה קפיצות עד העצירה
     let step = 0, delay = 50;
 
-    (function hop() {
+    setTimeout(hop, 650 + chips.length * 50); // מחכים שהריבועים ינחתו
+    function hop() {
       chips.forEach(c => c.classList.remove('hot'));
       chips[step % chips.length].classList.add('hot');
       if (step >= rounds) return finish();
       step++;
       if (step > rounds - 10) delay *= 1.28; // מאט לקראת הסוף
       setTimeout(hop, delay);
-    })();
+    }
 
     function finish() {
       chips.forEach((c, i) => { if (i !== winner) c.classList.add('dim'); });
@@ -394,9 +410,10 @@
       showResult(card);
 
       setTimeout(() => {
-        chips.forEach(c => c.classList.remove('dim', 'hot'));
+        chips.forEach(c => { c.classList.remove('dim', 'hot'); c.style.animationDelay = ''; });
+        panel.classList.remove('picking');
         busy = false; go.disabled = false;
-      }, 1500);
+      }, 2200);
     }
   }
 
