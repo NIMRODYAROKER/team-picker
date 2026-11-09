@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SPLIT ⚽ מחלק קבוצות</title>
+<title>SPLIT 🎲 מי? מה? עם מי?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
@@ -41,12 +41,38 @@
     animation: shine 6s linear infinite;
   }
   @keyframes shine { to { background-position: 300% 0; } }
-  .tag { text-align: center; color: rgba(255,255,255,.55); margin: 10px 0 32px; font-size: 15px; }
+  .tag { text-align: center; color: rgba(255,255,255,.55); margin: 10px 0 28px; font-size: 15px; }
 
   .glass {
     background: var(--glass); border: 1px solid var(--line); border-radius: 24px;
     padding: 18px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   }
+
+  /* בורר מצב */
+  .modes {
+    position: relative; display: grid; grid-template-columns: 1fr 1fr;
+    background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 16px; padding: 4px; margin-bottom: 16px;
+  }
+  .modes .pill {
+    position: absolute; top: 4px; bottom: 4px; right: 4px; width: calc(50% - 4px);
+    border-radius: 12px; background: linear-gradient(90deg, var(--lime), var(--cyan));
+    transition: transform .35s cubic-bezier(.3,1.4,.5,1);
+  }
+  .modes.pick .pill { transform: translateX(-100%); background: linear-gradient(90deg, var(--pink), var(--violet)); }
+  .modes button {
+    position: relative; z-index: 1; border: none; background: none; color: rgba(255,255,255,.6);
+    font: inherit; font-weight: 800; font-size: 15px; padding: 12px; cursor: pointer; transition: color .25s;
+  }
+  .modes button.on { color: #000; }
+  .modes.pick button.on { color: #fff; }
+
+  .opt { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; font-size: 14px; color: rgba(255,255,255,.6); }
+  .nums { display: flex; gap: 6px; }
+  .nums button {
+    width: 40px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: none;
+    color: #fff; font: inherit; font-weight: 800; cursor: pointer; transition: .2s;
+  }
+  .nums button.on { background: #fff; color: #000; border-color: #fff; }
 
   .input-row { display: flex; gap: 8px; }
   input {
@@ -73,43 +99,50 @@
     display: flex; align-items: center; gap: 6px;
     background: rgba(255,255,255,.08); border: 1px solid var(--line);
     padding: 8px 10px 8px 14px; border-radius: 999px; font-size: 15px;
-    animation: pop .35s cubic-bezier(.3,1.6,.5,1);
+    animation: pop .35s cubic-bezier(.3,1.6,.5,1); transition: background .08s, transform .08s, color .08s;
   }
-  .chip button { background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 14px; }
-  .chip button:hover { color: var(--pink); }
+  .chip.hot { background: var(--pink); border-color: var(--pink); color: #fff; transform: scale(1.12); box-shadow: 0 0 24px var(--pink); }
+  .chip.dim { opacity: .3; }
+  .chip button { background: none; border: none; color: inherit; opacity: .5; cursor: pointer; font-size: 14px; }
+  .chip button:hover { opacity: 1; }
   .empty { color: rgba(255,255,255,.3); font-size: 14px; padding: 10px 2px; }
   @keyframes pop { from { transform: scale(0); opacity: 0; } }
 
   .go {
-    position: relative; width: 100%; margin-top: 18px; padding: 18px; border: none; border-radius: 18px;
+    width: 100%; margin-top: 18px; padding: 18px; border: none; border-radius: 18px;
     font: inherit; font-size: 20px; font-weight: 900; color: #000; cursor: pointer;
     background: linear-gradient(90deg, var(--lime), var(--cyan));
     box-shadow: 0 10px 40px -8px rgba(198,255,61,.6);
-    transition: transform .15s, box-shadow .2s;
+    transition: transform .15s, box-shadow .2s, background .3s;
   }
-  .go:hover { transform: translateY(-2px); box-shadow: 0 16px 50px -6px rgba(61,225,255,.7); }
+  .go.pick { color: #fff; background: linear-gradient(90deg, var(--pink), var(--violet)); box-shadow: 0 10px 40px -8px rgba(255,61,139,.7); }
+  .go:hover { transform: translateY(-2px); }
   .go:active { transform: scale(.97); }
+  .go:disabled { opacity: .6; cursor: wait; }
   .go.spin { animation: shake .5s; }
   @keyframes shake { 20%,60% { transform: rotate(-2deg); } 40%,80% { transform: rotate(2deg); } }
 
+  /* תוצאה: קבוצות */
   .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
   .team { padding: 16px; position: relative; overflow: hidden; }
-  .team::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; }
-  .team.a::before { background: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
-  .team.b::before { background: var(--pink); box-shadow: 0 0 20px var(--pink); }
-  .team h2 { font-size: 13px; letter-spacing: 2px; font-weight: 800; margin-bottom: 12px; }
-  .team.a h2 { color: var(--cyan); }
-  .team.b h2 { color: var(--pink); }
+  .team::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); box-shadow: 0 0 20px var(--c); }
+  .team h2 { font-size: 13px; letter-spacing: 2px; font-weight: 800; margin-bottom: 12px; color: var(--c); }
   .team ol { list-style: none; display: flex; flex-direction: column; gap: 6px; }
   .team li {
     background: rgba(255,255,255,.06); border-radius: 10px; padding: 10px 12px; font-weight: 600;
     opacity: 0; transform: translateY(14px); animation: drop .45s forwards;
   }
   @keyframes drop { to { opacity: 1; transform: none; } }
-  .vs {
-    grid-column: 1 / -1; text-align: center; font-weight: 900; font-size: 14px; letter-spacing: 4px;
-    color: rgba(255,255,255,.35); order: -1;
+
+  /* תוצאה: נבחר אחד */
+  .winner { margin-top: 20px; text-align: center; padding: 30px 18px; position: relative; overflow: hidden; }
+  .winner::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--pink); box-shadow: 0 0 24px var(--pink); }
+  .winner small { display: block; letter-spacing: 3px; font-size: 12px; font-weight: 800; color: var(--pink); margin-bottom: 10px; }
+  .winner .who {
+    font-size: 48px; font-weight: 900; line-height: 1.1; word-break: break-word;
+    animation: boom .6s cubic-bezier(.3,1.8,.5,1);
   }
+  @keyframes boom { from { transform: scale(.2); opacity: 0; } }
 
   .share {
     display: none; width: 100%; margin-top: 12px; padding: 14px; border-radius: 16px;
@@ -134,34 +167,55 @@
 
 <main class="app">
   <h1 class="logo">SPLIT</h1>
-  <p class="tag">⚽ זורקים שמות, מקבלים קבוצות. בלי ויכוחים.</p>
+  <p class="tag">🎲 זורקים שמות, הגורל מחליט. בלי ויכוחים.</p>
 
   <section class="glass">
+    <div class="modes" id="modes">
+      <div class="pill"></div>
+      <button class="on" data-mode="teams" onclick="setMode('teams')">👥 חלק לקבוצות</button>
+      <button data-mode="pick" onclick="setMode('pick')">👆 בחר אחד</button>
+    </div>
+
+    <div class="opt" id="teamsOpt">
+      <span>כמה קבוצות?</span>
+      <div class="nums" id="nums">
+        <button class="on" onclick="setTeams(2)">2</button>
+        <button onclick="setTeams(3)">3</button>
+        <button onclick="setTeams(4)">4</button>
+      </div>
+    </div>
+
     <div class="input-row">
-      <input id="name" placeholder="מי משחק היום?" autocomplete="off">
+      <input id="name" placeholder="הוסף שם…" autocomplete="off">
       <button class="add" onclick="addPlayer()" aria-label="הוסף">+</button>
     </div>
     <div class="meta">
-      <span><span class="count" id="count">0</span> שחקנים</span>
+      <span><span class="count" id="count">0</span> משתתפים</span>
       <button class="clear" onclick="clearAll()">נקה הכול</button>
     </div>
     <div class="chips" id="chips"></div>
-    <button class="go" id="go" onclick="makeTeams()">🎲 תחלק אותנו</button>
+    <button class="go" id="go" onclick="run()">🎲 תחלק אותנו</button>
   </section>
 
-  <section class="teams" id="teams" style="display:none">
-    <div class="vs">— VS —</div>
-    <div class="glass team a"><h2>TEAM BLUE</h2><ol id="t1"></ol></div>
-    <div class="glass team b"><h2>TEAM PINK</h2><ol id="t2"></ol></div>
-  </section>
+  <div id="result"></div>
   <button class="share" id="share" onclick="shareWhatsApp()">שלח לקבוצה בוואטסאפ 💬</button>
 </main>
 
 <div class="toast" id="toast"></div>
 
 <script>
+  const TEAM_STYLE = [
+    { name: 'TEAM BLUE',   he: '🔵 כחולים', color: 'var(--cyan)' },
+    { name: 'TEAM PINK',   he: '🩷 ורודים', color: 'var(--pink)' },
+    { name: 'TEAM LIME',   he: '🟢 ירוקים', color: 'var(--lime)' },
+    { name: 'TEAM VIOLET', he: '🟣 סגולים', color: 'var(--violet)' },
+  ];
+
   let players = load();
-  let lastTeams = null;
+  let mode = 'teams';
+  let teamCount = 2;
+  let lastResult = null;
+  let busy = false;
 
   const nameInput = document.getElementById('name');
   nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPlayer(); });
@@ -171,6 +225,23 @@
   }
   function save() {
     try { localStorage.setItem('split-players', JSON.stringify(players)); } catch {}
+  }
+
+  function setMode(m) {
+    if (busy) return;
+    mode = m;
+    document.getElementById('modes').classList.toggle('pick', m === 'pick');
+    document.querySelectorAll('.modes button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+    document.getElementById('teamsOpt').style.display = m === 'teams' ? 'flex' : 'none';
+    const go = document.getElementById('go');
+    go.classList.toggle('pick', m === 'pick');
+    go.textContent = m === 'pick' ? '👆 מי זה יהיה?' : '🎲 תחלק אותנו';
+    clearResult();
+  }
+
+  function setTeams(n) {
+    teamCount = n;
+    document.querySelectorAll('#nums button').forEach(b => b.classList.toggle('on', +b.textContent === n));
   }
 
   function addPlayer() {
@@ -183,12 +254,17 @@
     save(); render();
   }
 
-  function removePlayer(i) { players.splice(i, 1); save(); render(); }
+  function removePlayer(i) { if (busy) return; players.splice(i, 1); save(); render(); }
 
   function clearAll() {
-    players = []; save(); render();
-    document.getElementById('teams').style.display = 'none';
+    if (busy) return;
+    players = []; save(); render(); clearResult();
+  }
+
+  function clearResult() {
+    document.getElementById('result').innerHTML = '';
     document.getElementById('share').style.display = 'none';
+    lastResult = null;
   }
 
   function render() {
@@ -217,38 +293,101 @@
     return a;
   }
 
+  function run() {
+    if (busy) return;
+    if (mode === 'teams') makeTeams(); else pickOne();
+  }
+
+  /* מצב 1: חלוקה לקבוצות */
   function makeTeams() {
-    if (players.length < 2) { toast('צריך לפחות 2 שחקנים'); return; }
+    if (players.length < teamCount) { toast(`צריך לפחות ${teamCount} משתתפים`); return; }
     const btn = document.getElementById('go');
     btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin');
 
     const mixed = shuffle(players);
-    const half = Math.ceil(mixed.length / 2);
-    lastTeams = [mixed.slice(0, half), mixed.slice(half)];
+    const teams = Array.from({ length: teamCount }, () => []);
+    mixed.forEach((p, i) => teams[i % teamCount].push(p));
+    lastResult = { type: 'teams', teams };
 
-    fill('t1', lastTeams[0]);
-    fill('t2', lastTeams[1]);
-    document.getElementById('teams').style.display = 'grid';
-    document.getElementById('share').style.display = 'block';
-    confetti();
-    document.getElementById('teams').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const wrap = document.createElement('section');
+    wrap.className = 'teams';
+    teams.forEach((members, t) => {
+      const s = TEAM_STYLE[t];
+      const card = document.createElement('div');
+      card.className = 'glass team';
+      card.style.setProperty('--c', s.color);
+      card.innerHTML = `<h2>${s.name}</h2><ol></ol>`;
+      const ol = card.querySelector('ol');
+      members.forEach((n, i) => {
+        const li = document.createElement('li');
+        li.textContent = n;
+        li.style.animationDelay = (i * 0.12 + t * 0.06 + 0.1) + 's';
+        ol.appendChild(li);
+      });
+      wrap.appendChild(card);
+    });
+    showResult(wrap);
   }
 
-  function fill(id, names) {
-    const ol = document.getElementById(id);
-    ol.innerHTML = '';
-    names.forEach((n, i) => {
-      const li = document.createElement('li');
-      li.textContent = n;
-      li.style.animationDelay = (i * 0.12 + 0.1) + 's';
-      ol.appendChild(li);
-    });
+  /* מצב 2: בחירת אדם אחד, עם אנימציית רולטה */
+  function pickOne() {
+    if (players.length < 2) { toast('צריך לפחות 2 משתתפים'); return; }
+    busy = true;
+    clearResult();
+    const go = document.getElementById('go');
+    go.disabled = true;
+
+    const chips = [...document.querySelectorAll('.chip')];
+    const winner = Math.floor(Math.random() * players.length);
+    const rounds = 3 * players.length + winner; // כמה קפיצות עד העצירה
+    let step = 0, delay = 50;
+
+    (function hop() {
+      chips.forEach(c => c.classList.remove('hot'));
+      chips[step % chips.length].classList.add('hot');
+      if (step >= rounds) return finish();
+      step++;
+      if (step > rounds - 10) delay *= 1.28; // מאט לקראת הסוף
+      setTimeout(hop, delay);
+    })();
+
+    function finish() {
+      chips.forEach((c, i) => { if (i !== winner) c.classList.add('dim'); });
+      const name = players[winner];
+      lastResult = { type: 'pick', name };
+
+      const card = document.createElement('section');
+      card.className = 'glass winner';
+      card.innerHTML = '<small>הגורל בחר ב…</small><div class="who"></div>';
+      card.querySelector('.who').textContent = name + ' 👑';
+      showResult(card);
+
+      setTimeout(() => {
+        chips.forEach(c => c.classList.remove('dim', 'hot'));
+        busy = false; go.disabled = false;
+      }, 1500);
+    }
+  }
+
+  function showResult(el) {
+    const r = document.getElementById('result');
+    r.innerHTML = '';
+    r.appendChild(el);
+    document.getElementById('share').style.display = 'block';
+    confetti();
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function shareWhatsApp() {
-    if (!lastTeams) return;
-    const text = '⚽ הקבוצות להיום:\n\n🔵 כחולים: ' + lastTeams[0].join(', ') +
-                 '\n🩷 ורודים: ' + lastTeams[1].join(', ') + '\n\nבהצלחה לכולם!';
+    if (!lastResult) return;
+    let text;
+    if (lastResult.type === 'teams') {
+      text = '🎲 הקבוצות שיצאו:\n\n' +
+        lastResult.teams.map((m, i) => TEAM_STYLE[i].he + ': ' + m.join(', ')).join('\n') +
+        '\n\nבהצלחה לכולם!';
+    } else {
+      text = '👆 הגורל החליט: ' + lastResult.name + ' 👑\nאין ערעורים 😎';
+    }
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
   }
 
