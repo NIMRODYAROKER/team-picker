@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SPLIT 🎲 מי? מה? עם מי?</title>
+<title>SPLIT | מחלק קבוצות ובוחר</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
@@ -67,12 +67,14 @@
   .modes.pick button.on { color: #fff; }
 
   .opt { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; font-size: 14px; color: rgba(255,255,255,.6); }
-  .nums { display: flex; gap: 6px; }
-  .nums button {
-    width: 40px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: none;
-    color: #fff; font: inherit; font-weight: 800; cursor: pointer; transition: .2s;
+  .numwrap { display: flex; align-items: center; gap: 10px; }
+  .hint { font-size: 12px; color: rgba(255,255,255,.35); }
+  input.numbox {
+    flex: none; width: 56px; padding: 8px 0; text-align: center;
+    font-size: 18px; font-weight: 800; border-radius: 12px;
   }
-  .nums button.on { background: #fff; color: #000; border-color: #fff; }
+  input.numbox.bump { animation: bump .4s; border-color: var(--pink); }
+  @keyframes bump { 30% { transform: scale(1.15); } }
 
   .input-row { display: flex; gap: 8px; }
   input {
@@ -167,21 +169,20 @@
 
 <main class="app">
   <h1 class="logo">SPLIT</h1>
-  <p class="tag">🎲 זורקים שמות, הגורל מחליט. בלי ויכוחים.</p>
+  <p class="tag">זורקים שמות, הגורל מחליט. בלי ויכוחים.</p>
 
   <section class="glass">
     <div class="modes" id="modes">
       <div class="pill"></div>
-      <button class="on" data-mode="teams" onclick="setMode('teams')">👥 חלק לקבוצות</button>
-      <button data-mode="pick" onclick="setMode('pick')">👆 בחר אחד</button>
+      <button class="on" data-mode="teams" onclick="setMode('teams')">חלק לקבוצות</button>
+      <button data-mode="pick" onclick="setMode('pick')">בחר אחד</button>
     </div>
 
     <div class="opt" id="teamsOpt">
       <span>כמה קבוצות?</span>
-      <div class="nums" id="nums">
-        <button class="on" onclick="setTeams(2)">2</button>
-        <button onclick="setTeams(3)">3</button>
-        <button onclick="setTeams(4)">4</button>
+      <div class="numwrap">
+        <span class="hint" id="hint"></span>
+        <input id="teamNum" class="numbox" type="text" inputmode="numeric" maxlength="2" value="2" aria-label="מספר קבוצות">
       </div>
     </div>
 
@@ -194,21 +195,21 @@
       <button class="clear" onclick="clearAll()">נקה הכול</button>
     </div>
     <div class="chips" id="chips"></div>
-    <button class="go" id="go" onclick="run()">🎲 תחלק אותנו</button>
+    <button class="go" id="go" onclick="run()">תחלק אותנו</button>
   </section>
 
   <div id="result"></div>
-  <button class="share" id="share" onclick="shareWhatsApp()">שלח לקבוצה בוואטסאפ 💬</button>
+  <button class="share" id="share" onclick="shareWhatsApp()">שלח לקבוצה בוואטסאפ</button>
 </main>
 
 <div class="toast" id="toast"></div>
 
 <script>
   const TEAM_STYLE = [
-    { name: 'TEAM BLUE',   he: '🔵 כחולים', color: 'var(--cyan)' },
-    { name: 'TEAM PINK',   he: '🩷 ורודים', color: 'var(--pink)' },
-    { name: 'TEAM LIME',   he: '🟢 ירוקים', color: 'var(--lime)' },
-    { name: 'TEAM VIOLET', he: '🟣 סגולים', color: 'var(--violet)' },
+    { name: 'TEAM BLUE',   he: 'כחולים', color: 'var(--cyan)' },
+    { name: 'TEAM PINK',   he: 'ורודים', color: 'var(--pink)' },
+    { name: 'TEAM LIME',   he: 'ירוקים', color: 'var(--lime)' },
+    { name: 'TEAM VIOLET', he: 'סגולים', color: 'var(--violet)' },
   ];
 
   let players = load();
@@ -235,19 +236,46 @@
     document.getElementById('teamsOpt').style.display = m === 'teams' ? 'flex' : 'none';
     const go = document.getElementById('go');
     go.classList.toggle('pick', m === 'pick');
-    go.textContent = m === 'pick' ? '👆 מי זה יהיה?' : '🎲 תחלק אותנו';
+    go.textContent = m === 'pick' ? 'מי זה יהיה?' : 'תחלק אותנו';
     clearResult();
   }
 
-  function setTeams(n) {
+  /* מספר הקבוצות: רק ספרות, ובטווח הגיוני לפי כמות המשתתפים */
+  const teamNum = document.getElementById('teamNum');
+  function maxTeams() { return Math.max(2, Math.floor(players.length / 2)); }
+
+  teamNum.addEventListener('input', () => {
+    teamNum.value = teamNum.value.replace(/\D/g, '');
+  });
+  teamNum.addEventListener('change', fixTeams);
+  teamNum.addEventListener('blur', fixTeams);
+  teamNum.addEventListener('keydown', e => { if (e.key === 'Enter') teamNum.blur(); });
+
+  function fixTeams() {
+    const max = maxTeams();
+    let n = parseInt(teamNum.value, 10);
+    const wanted = n;
+    if (isNaN(n) || n < 2) n = 2;
+    if (n > max) n = max;
+    teamNum.value = n;
     teamCount = n;
-    document.querySelectorAll('#nums button').forEach(b => b.classList.toggle('on', +b.textContent === n));
+    if (!isNaN(wanted) && wanted !== n) {
+      teamNum.classList.remove('bump'); void teamNum.offsetWidth; teamNum.classList.add('bump');
+      if (wanted > max) toast(players.length < 4
+        ? 'עם פחות מ-4 משתתפים אפשר רק 2 קבוצות'
+        : `עם ${players.length} משתתפים אפשר עד ${max} קבוצות`);
+    }
+  }
+
+  function updateHint() {
+    document.getElementById('hint').textContent = `עד ${maxTeams()}`;
+    if (teamCount > maxTeams()) { teamCount = maxTeams(); teamNum.value = teamCount; }
   }
 
   function addPlayer() {
     const name = nameInput.value.trim();
     if (!name) return;
-    if (players.includes(name)) { toast('הוא כבר ברשימה 😅'); return; }
+    if (players.includes(name)) { toast('השם הזה כבר ברשימה'); return; }
     players.push(name);
     nameInput.value = '';
     nameInput.focus();
@@ -276,12 +304,14 @@
       chip.className = 'chip';
       chip.textContent = p;
       const x = document.createElement('button');
-      x.textContent = '✕';
+      x.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      x.setAttribute('aria-label', 'הסר');
       x.onclick = () => removePlayer(i);
       chip.appendChild(x);
       box.appendChild(chip);
     });
     document.getElementById('count').textContent = players.length;
+    updateHint();
   }
 
   function shuffle(arr) {
@@ -300,7 +330,8 @@
 
   /* מצב 1: חלוקה לקבוצות */
   function makeTeams() {
-    if (players.length < teamCount) { toast(`צריך לפחות ${teamCount} משתתפים`); return; }
+    fixTeams();
+    if (players.length < 2) { toast('צריך לפחות 2 משתתפים'); return; }
     const btn = document.getElementById('go');
     btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin');
 
@@ -359,7 +390,7 @@
       const card = document.createElement('section');
       card.className = 'glass winner';
       card.innerHTML = '<small>הגורל בחר ב…</small><div class="who"></div>';
-      card.querySelector('.who').textContent = name + ' 👑';
+      card.querySelector('.who').textContent = name;
       showResult(card);
 
       setTimeout(() => {
@@ -382,11 +413,11 @@
     if (!lastResult) return;
     let text;
     if (lastResult.type === 'teams') {
-      text = '🎲 הקבוצות שיצאו:\n\n' +
+      text = 'הקבוצות שיצאו:\n\n' +
         lastResult.teams.map((m, i) => TEAM_STYLE[i].he + ': ' + m.join(', ')).join('\n') +
         '\n\nבהצלחה לכולם!';
     } else {
-      text = '👆 הגורל החליט: ' + lastResult.name + ' 👑\nאין ערעורים 😎';
+      text = 'הגורל החליט: ' + lastResult.name + '\nאין ערעורים.';
     }
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
   }
