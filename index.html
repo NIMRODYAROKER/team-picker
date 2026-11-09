@@ -3,112 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>מחלק קבוצות ⚽</title>
+<title>SPLIT ⚽ מחלק קבוצות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
+  :root {
+    --bg: #07070c;
+    --lime: #c6ff3d;
+    --pink: #ff3d8b;
+    --cyan: #3de1ff;
+    --violet: #8b5cff;
+    --glass: rgba(255,255,255,.06);
+    --line: rgba(255,255,255,.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0; font-family: system-ui, Arial, sans-serif;
-    background: linear-gradient(160deg, #0b6e2f, #0a3d1d); color: #fff;
-    min-height: 100vh; display: flex; justify-content: center; padding: 24px 16px;
+    font-family: 'Rubik', system-ui, sans-serif;
+    background: var(--bg); color: #fff;
+    min-height: 100vh; overflow-x: hidden;
+    display: flex; justify-content: center; padding: 40px 16px 60px;
   }
-  .app { width: 100%; max-width: 480px; }
-  h1 { text-align: center; margin: 0 0 4px; font-size: 32px; }
-  .sub { text-align: center; opacity: .8; margin: 0 0 24px; }
-  .card { background: rgba(255,255,255,.1); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-  .row { display: flex; gap: 8px; }
+
+  /* רקע: כתמי צבע זזים */
+  .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: .45; z-index: -1; animation: float 14s ease-in-out infinite alternate; }
+  .b1 { width: 380px; height: 380px; background: var(--violet); top: -120px; right: -100px; }
+  .b2 { width: 320px; height: 320px; background: var(--pink); bottom: -100px; left: -80px; animation-delay: -5s; }
+  .b3 { width: 240px; height: 240px; background: var(--cyan); top: 40%; left: 55%; opacity: .25; animation-delay: -9s; }
+  @keyframes float { to { transform: translate(60px, 80px) scale(1.15); } }
+
+  .app { width: 100%; max-width: 460px; }
+
+  .logo {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; text-align: center; line-height: 1;
+    background: linear-gradient(90deg, var(--lime), var(--cyan), var(--pink), var(--lime));
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine { to { background-position: 300% 0; } }
+  .tag { text-align: center; color: rgba(255,255,255,.55); margin: 10px 0 32px; font-size: 15px; }
+
+  .glass {
+    background: var(--glass); border: 1px solid var(--line); border-radius: 24px;
+    padding: 18px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  }
+
+  .input-row { display: flex; gap: 8px; }
   input {
-    flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px;
+    flex: 1; background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 14px;
+    color: #fff; font: inherit; font-size: 16px; padding: 14px 16px; outline: none; transition: .2s;
   }
-  button {
-    padding: 12px 16px; border-radius: 10px; border: none; font-size: 16px;
-    font-weight: bold; cursor: pointer; background: #ffd23f; color: #222;
+  input::placeholder { color: rgba(255,255,255,.35); }
+  input:focus { border-color: var(--lime); box-shadow: 0 0 0 4px rgba(198,255,61,.15); }
+
+  .add {
+    width: 52px; border: none; border-radius: 14px; cursor: pointer;
+    background: var(--lime); color: #000; font-size: 26px; font-weight: 800; transition: .15s;
   }
-  button.big { width: 100%; font-size: 20px; padding: 16px; margin-top: 12px; }
-  button.small { background: transparent; color: #fff; padding: 4px 8px; font-size: 14px; }
-  ul { list-style: none; padding: 0; margin: 12px 0 0; }
-  li {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 12px; background: rgba(0,0,0,.2); border-radius: 8px; margin-bottom: 6px;
+  .add:hover { transform: scale(1.06) rotate(90deg); }
+  .add:active { transform: scale(.92); }
+
+  .meta { display: flex; justify-content: space-between; align-items: center; margin: 16px 2px 10px; font-size: 13px; color: rgba(255,255,255,.5); }
+  .count { color: var(--lime); font-weight: 800; }
+  .clear { background: none; border: none; color: rgba(255,255,255,.45); font: inherit; font-size: 13px; cursor: pointer; }
+  .clear:hover { color: var(--pink); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+  .chip {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.08); border: 1px solid var(--line);
+    padding: 8px 10px 8px 14px; border-radius: 999px; font-size: 15px;
+    animation: pop .35s cubic-bezier(.3,1.6,.5,1);
   }
-  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .team h2 { margin: 0 0 8px; font-size: 20px; text-align: center; }
-  .blue { background: rgba(40,110,255,.35); }
-  .red  { background: rgba(255,60,60,.35); }
-  .empty { opacity: .6; text-align: center; margin: 8px 0 0; }
+  .chip button { background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 14px; }
+  .chip button:hover { color: var(--pink); }
+  .empty { color: rgba(255,255,255,.3); font-size: 14px; padding: 10px 2px; }
+  @keyframes pop { from { transform: scale(0); opacity: 0; } }
+
+  .go {
+    position: relative; width: 100%; margin-top: 18px; padding: 18px; border: none; border-radius: 18px;
+    font: inherit; font-size: 20px; font-weight: 900; color: #000; cursor: pointer;
+    background: linear-gradient(90deg, var(--lime), var(--cyan));
+    box-shadow: 0 10px 40px -8px rgba(198,255,61,.6);
+    transition: transform .15s, box-shadow .2s;
+  }
+  .go:hover { transform: translateY(-2px); box-shadow: 0 16px 50px -6px rgba(61,225,255,.7); }
+  .go:active { transform: scale(.97); }
+  .go.spin { animation: shake .5s; }
+  @keyframes shake { 20%,60% { transform: rotate(-2deg); } 40%,80% { transform: rotate(2deg); } }
+
+  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .team { padding: 16px; position: relative; overflow: hidden; }
+  .team::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; }
+  .team.a::before { background: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
+  .team.b::before { background: var(--pink); box-shadow: 0 0 20px var(--pink); }
+  .team h2 { font-size: 13px; letter-spacing: 2px; font-weight: 800; margin-bottom: 12px; }
+  .team.a h2 { color: var(--cyan); }
+  .team.b h2 { color: var(--pink); }
+  .team ol { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .team li {
+    background: rgba(255,255,255,.06); border-radius: 10px; padding: 10px 12px; font-weight: 600;
+    opacity: 0; transform: translateY(14px); animation: drop .45s forwards;
+  }
+  @keyframes drop { to { opacity: 1; transform: none; } }
+  .vs {
+    grid-column: 1 / -1; text-align: center; font-weight: 900; font-size: 14px; letter-spacing: 4px;
+    color: rgba(255,255,255,.35); order: -1;
+  }
+
+  .share {
+    display: none; width: 100%; margin-top: 12px; padding: 14px; border-radius: 16px;
+    border: 1px solid var(--line); background: var(--glass); color: #fff;
+    font: inherit; font-weight: 600; cursor: pointer; transition: .2s;
+  }
+  .share:hover { border-color: #25d366; color: #25d366; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 100px);
+    background: var(--pink); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 600;
+    transition: transform .3s cubic-bezier(.3,1.6,.5,1);
+  }
+  .toast.show { transform: translate(-50%, 0); }
+
+  canvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 </style>
 </head>
 <body>
-<div class="app">
-  <h1>⚽ מחלק קבוצות</h1>
-  <p class="sub">מוסיפים את החברים, לוחצים, והקבוצות מוכנות</p>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<canvas id="confetti"></canvas>
 
-  <div class="card">
-    <div class="row">
-      <input id="name" placeholder="שם של שחקן" onkeydown="if(event.key==='Enter') addPlayer()">
-      <button onclick="addPlayer()">הוסף</button>
+<main class="app">
+  <h1 class="logo">SPLIT</h1>
+  <p class="tag">⚽ זורקים שמות, מקבלים קבוצות. בלי ויכוחים.</p>
+
+  <section class="glass">
+    <div class="input-row">
+      <input id="name" placeholder="מי משחק היום?" autocomplete="off">
+      <button class="add" onclick="addPlayer()" aria-label="הוסף">+</button>
     </div>
-    <ul id="players"></ul>
-    <p id="empty" class="empty">עוד אין שחקנים</p>
-    <button class="big" onclick="makeTeams()">🎲 חלק לקבוצות</button>
-  </div>
+    <div class="meta">
+      <span><span class="count" id="count">0</span> שחקנים</span>
+      <button class="clear" onclick="clearAll()">נקה הכול</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <button class="go" id="go" onclick="makeTeams()">🎲 תחלק אותנו</button>
+  </section>
 
-  <div class="teams">
-    <div class="card team blue"><h2>🔵 כחולים</h2><ul id="team1"></ul></div>
-    <div class="card team red"><h2>🔴 אדומים</h2><ul id="team2"></ul></div>
-  </div>
-</div>
+  <section class="teams" id="teams" style="display:none">
+    <div class="vs">— VS —</div>
+    <div class="glass team a"><h2>TEAM BLUE</h2><ol id="t1"></ol></div>
+    <div class="glass team b"><h2>TEAM PINK</h2><ol id="t2"></ol></div>
+  </section>
+  <button class="share" id="share" onclick="shareWhatsApp()">שלח לקבוצה בוואטסאפ 💬</button>
+</main>
+
+<div class="toast" id="toast"></div>
 
 <script>
-  let players = [];
+  let players = load();
+  let lastTeams = null;
+
+  const nameInput = document.getElementById('name');
+  nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPlayer(); });
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem('split-players')) || []; } catch { return []; }
+  }
+  function save() {
+    try { localStorage.setItem('split-players', JSON.stringify(players)); } catch {}
+  }
 
   function addPlayer() {
-    const input = document.getElementById('name');
-    const name = input.value.trim();
+    const name = nameInput.value.trim();
     if (!name) return;
+    if (players.includes(name)) { toast('הוא כבר ברשימה 😅'); return; }
     players.push(name);
-    input.value = '';
-    input.focus();
-    showPlayers();
+    nameInput.value = '';
+    nameInput.focus();
+    save(); render();
   }
 
-  function removePlayer(i) {
-    players.splice(i, 1);
-    showPlayers();
+  function removePlayer(i) { players.splice(i, 1); save(); render(); }
+
+  function clearAll() {
+    players = []; save(); render();
+    document.getElementById('teams').style.display = 'none';
+    document.getElementById('share').style.display = 'none';
   }
 
-  function showPlayers() {
-    const list = document.getElementById('players');
-    list.innerHTML = '';
+  function render() {
+    const box = document.getElementById('chips');
+    box.innerHTML = '';
+    if (!players.length) box.innerHTML = '<p class="empty">עוד אף אחד לא הגיע…</p>';
     players.forEach((p, i) => {
-      const li = document.createElement('li');
-      li.textContent = p;
-      const btn = document.createElement('button');
-      btn.className = 'small';
-      btn.textContent = '✕';
-      btn.onclick = () => removePlayer(i);
-      li.appendChild(btn);
-      list.appendChild(li);
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = p;
+      const x = document.createElement('button');
+      x.textContent = '✕';
+      x.onclick = () => removePlayer(i);
+      chip.appendChild(x);
+      box.appendChild(chip);
     });
-    document.getElementById('empty').style.display = players.length ? 'none' : 'block';
+    document.getElementById('count').textContent = players.length;
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 
   function makeTeams() {
-    if (players.length < 2) { alert('צריך לפחות 2 שחקנים'); return; }
-    const mixed = [...players].sort(() => Math.random() - 0.5);
+    if (players.length < 2) { toast('צריך לפחות 2 שחקנים'); return; }
+    const btn = document.getElementById('go');
+    btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin');
+
+    const mixed = shuffle(players);
     const half = Math.ceil(mixed.length / 2);
-    fill('team1', mixed.slice(0, half));
-    fill('team2', mixed.slice(half));
+    lastTeams = [mixed.slice(0, half), mixed.slice(half)];
+
+    fill('t1', lastTeams[0]);
+    fill('t2', lastTeams[1]);
+    document.getElementById('teams').style.display = 'grid';
+    document.getElementById('share').style.display = 'block';
+    confetti();
+    document.getElementById('teams').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function fill(id, names) {
-    const ul = document.getElementById(id);
-    ul.innerHTML = '';
-    names.forEach(n => {
+    const ol = document.getElementById(id);
+    ol.innerHTML = '';
+    names.forEach((n, i) => {
       const li = document.createElement('li');
       li.textContent = n;
-      ul.appendChild(li);
+      li.style.animationDelay = (i * 0.12 + 0.1) + 's';
+      ol.appendChild(li);
     });
   }
+
+  function shareWhatsApp() {
+    if (!lastTeams) return;
+    const text = '⚽ הקבוצות להיום:\n\n🔵 כחולים: ' + lastTeams[0].join(', ') +
+                 '\n🩷 ורודים: ' + lastTeams[1].join(', ') + '\n\nבהצלחה לכולם!';
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  /* קונפטי */
+  function confetti() {
+    const c = document.getElementById('confetti');
+    const ctx = c.getContext('2d');
+    c.width = innerWidth; c.height = innerHeight;
+    const colors = ['#c6ff3d', '#3de1ff', '#ff3d8b', '#8b5cff', '#ffffff'];
+    const parts = Array.from({ length: 140 }, () => ({
+      x: c.width / 2, y: c.height / 2,
+      vx: (Math.random() - 0.5) * 16, vy: Math.random() * -16 - 4,
+      size: Math.random() * 7 + 4, color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3
+    }));
+    let frame = 0;
+    (function tick() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      parts.forEach(p => {
+        p.vy += 0.45; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        ctx.restore();
+      });
+      if (++frame < 120) requestAnimationFrame(tick);
+      else ctx.clearRect(0, 0, c.width, c.height);
+    })();
+  }
+
+  render();
 </script>
 </body>
 </html>
