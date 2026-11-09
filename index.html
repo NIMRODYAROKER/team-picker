@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מחלק קבוצות ⚽</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, Arial, sans-serif;
+    background: linear-gradient(160deg, #0b6e2f, #0a3d1d); color: #fff;
+    min-height: 100vh; display: flex; justify-content: center; padding: 24px 16px;
+  }
+  .app { width: 100%; max-width: 480px; }
+  h1 { text-align: center; margin: 0 0 4px; font-size: 32px; }
+  .sub { text-align: center; opacity: .8; margin: 0 0 24px; }
+  .card { background: rgba(255,255,255,.1); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+  .row { display: flex; gap: 8px; }
+  input {
+    flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px;
+  }
+  button {
+    padding: 12px 16px; border-radius: 10px; border: none; font-size: 16px;
+    font-weight: bold; cursor: pointer; background: #ffd23f; color: #222;
+  }
+  button.big { width: 100%; font-size: 20px; padding: 16px; margin-top: 12px; }
+  button.small { background: transparent; color: #fff; padding: 4px 8px; font-size: 14px; }
+  ul { list-style: none; padding: 0; margin: 12px 0 0; }
+  li {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: rgba(0,0,0,.2); border-radius: 8px; margin-bottom: 6px;
+  }
+  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .team h2 { margin: 0 0 8px; font-size: 20px; text-align: center; }
+  .blue { background: rgba(40,110,255,.35); }
+  .red  { background: rgba(255,60,60,.35); }
+  .empty { opacity: .6; text-align: center; margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>⚽ מחלק קבוצות</h1>
+  <p class="sub">מוסיפים את החברים, לוחצים, והקבוצות מוכנות</p>
+
+  <div class="card">
+    <div class="row">
+      <input id="name" placeholder="שם של שחקן" onkeydown="if(event.key==='Enter') addPlayer()">
+      <button onclick="addPlayer()">הוסף</button>
+    </div>
+    <ul id="players"></ul>
+    <p id="empty" class="empty">עוד אין שחקנים</p>
+    <button class="big" onclick="makeTeams()">🎲 חלק לקבוצות</button>
+  </div>
+
+  <div class="teams">
+    <div class="card team blue"><h2>🔵 כחולים</h2><ul id="team1"></ul></div>
+    <div class="card team red"><h2>🔴 אדומים</h2><ul id="team2"></ul></div>
+  </div>
+</div>
+
+<script>
+  let players = [];
+
+  function addPlayer() {
+    const input = document.getElementById('name');
+    const name = input.value.trim();
+    if (!name) return;
+    players.push(name);
+    input.value = '';
+    input.focus();
+    showPlayers();
+  }
+
+  function removePlayer(i) {
+    players.splice(i, 1);
+    showPlayers();
+  }
+
+  function showPlayers() {
+    const list = document.getElementById('players');
+    list.innerHTML = '';
+    players.forEach((p, i) => {
+      const li = document.createElement('li');
+      li.textContent = p;
+      const btn = document.createElement('button');
+      btn.className = 'small';
+      btn.textContent = '✕';
+      btn.onclick = () => removePlayer(i);
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+    document.getElementById('empty').style.display = players.length ? 'none' : 'block';
+  }
+
+  function makeTeams() {
+    if (players.length < 2) { alert('צריך לפחות 2 שחקנים'); return; }
+    const mixed = [...players].sort(() => Math.random() - 0.5);
+    const half = Math.ceil(mixed.length / 2);
+    fill('team1', mixed.slice(0, half));
+    fill('team2', mixed.slice(half));
+  }
+
+  function fill(id, names) {
+    const ul = document.getElementById(id);
+    ul.innerHTML = '';
+    names.forEach(n => {
+      const li = document.createElement('li');
+      li.textContent = n;
+      ul.appendChild(li);
+    });
+  }
+</script>
+</body>
+</html>
