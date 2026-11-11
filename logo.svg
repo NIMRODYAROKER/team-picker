@@ -11,8 +11,8 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="#07070c"/>
-  <g transform="rotate(-40 256 256)">
-    <path d="M256 96 A160 160 0 0 0 256 416 Z" transform="translate(-16 -30)" fill="url(#teams)"/>
-    <path d="M256 96 A160 160 0 0 1 256 416 Z" transform="translate(16 30)" fill="url(#pick)"/>
+  <g transform="translate(256 256) scale(0.93) translate(-256 -256) rotate(-40 256 256)" stroke-linejoin="round" stroke-width="44">
+    <path d="M250 118 A138 138 0 0 0 250 394 Q266 256 250 118 Z" transform="translate(-30 -30)" fill="url(#teams)" stroke="url(#teams)"/>
+    <path d="M262 118 A138 138 0 0 1 262 394 Q246 256 262 118 Z" transform="translate(30 30)" fill="url(#pick)" stroke="url(#pick)"/>
   </g>
 </svg>
