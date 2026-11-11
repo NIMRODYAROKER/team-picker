@@ -1,20 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <title>SPLIT</title>
   <defs>
-    <linearGradient id="teams" gradientUnits="userSpaceOnUse" x1="0" y1="110" x2="0" y2="402">
+    <linearGradient id="teams" gradientUnits="userSpaceOnUse" x1="390" y1="110" x2="150" y2="380">
       <stop offset="0" stop-color="#c6ff3d"/>
       <stop offset="1" stop-color="#3de1ff"/>
     </linearGradient>
-    <linearGradient id="pick" gradientUnits="userSpaceOnUse" x1="0" y1="110" x2="0" y2="402">
-      <stop offset="0" stop-color="#ff3d8b"/>
-      <stop offset="1" stop-color="#8b5cff"/>
+    <linearGradient id="pick" gradientUnits="userSpaceOnUse" x1="390" y1="110" x2="150" y2="380">
+      <stop offset="0" stop-color="#8b5cff"/>
+      <stop offset="1" stop-color="#ff3d8b"/>
     </linearGradient>
+    <path id="s" d="M340.1 93.6 C340.3 95.6 320.8 98.1 311.9 100.5 C302.9 102.8 294.5 105.3 286.4 107.9 C278.4 110.6 270.8 113.3 263.7 116.4 C256.5 119.4 249.8 122.5 243.7 126.1 C237.5 129.6 231.8 133.3 226.8 137.4 C221.7 141.4 217.2 145.8 213.3 150.3 C209.4 154.7 206.2 159.4 203.4 164.0 C200.6 168.5 198.5 173.1 196.6 177.4 C194.7 181.6 193.2 185.7 191.8 189.5 C190.4 193.3 189.3 196.7 188.1 200.0 C187.0 203.4 185.9 206.4 185.1 209.4 C184.3 212.5 183.5 215.4 183.2 218.3 C183.0 221.2 183.0 224.2 183.7 226.9 C184.5 229.7 185.7 232.4 187.5 234.8 C189.3 237.1 191.9 239.2 194.5 240.9 C197.1 242.7 200.3 243.9 203.0 245.3 C205.7 246.7 208.2 247.9 210.6 249.4 C213.0 250.8 215.1 252.5 217.5 254.2 C220.0 255.9 222.3 257.9 225.3 259.6 C228.3 261.3 230.7 260.6 235.5 264.4 C240.3 268.1 249.3 275.3 254.1 282.2 C258.9 289.1 262.6 297.5 264.4 305.8 C266.3 314.0 266.5 323.2 265.0 331.5 C263.5 339.8 260.2 348.4 255.6 355.5 C251.1 362.6 244.7 369.3 237.8 374.1 C230.9 378.9 222.5 382.6 214.2 384.4 C206.0 386.3 196.8 386.5 188.5 385.0 C180.2 383.5 171.9 380.1 164.5 375.6 C157.1 371.2 150.1 364.7 143.9 358.5 C137.6 352.3 131.8 345.7 126.9 338.7 C121.9 331.7 117.8 324.2 114.4 316.6 C111.0 309.1 108.5 301.1 106.6 293.4 C104.7 285.6 103.8 277.7 102.8 270.2 C101.9 262.6 101.2 255.2 100.9 247.9 C100.6 240.6 100.7 233.4 101.2 226.3 C101.7 219.2 102.6 212.1 104.0 205.1 C105.5 198.2 107.4 191.3 109.9 184.7 C112.5 178.0 115.6 171.5 119.4 165.5 C123.1 159.4 127.5 153.6 132.3 148.2 C137.2 142.9 142.7 138.0 148.4 133.5 C154.2 129.0 160.5 125.0 167.0 121.4 C173.5 117.8 180.4 114.6 187.4 111.7 C194.5 108.8 201.8 106.3 209.3 103.9 C216.7 101.6 224.4 99.6 232.3 97.7 C240.3 95.9 248.4 94.3 256.8 93.0 C265.2 91.7 273.8 90.5 282.8 89.8 C291.7 89.1 300.9 88.1 310.5 88.7 C320.0 89.4 339.8 91.7 340.1 93.6 Z"/>
   </defs>
   <rect width="512" height="512" rx="112" fill="#07070c"/>
-  <g transform="translate(256 256) scale(0.9) translate(-256 -256) rotate(-40 256 256)" stroke-linejoin="round" stroke-width="30">
-    <path id="L" d="M222 112 A146 146 0 0 0 222 400 C 234 380 214 330 226 300 C 232 284 236 268 236 256 C 236 244 232 228 226 212 C 214 182 234 132 222 112 Z" fill="url(#teams)" stroke="url(#teams)"/>
-    <path d="M290 112 A146 146 0 0 1 290 400 C 278 380 298 330 286 300 C 280 284 276 268 276 256 C 276 244 280 228 286 212 C 298 182 278 132 290 112 Z" fill="url(#pick)" stroke="url(#pick)"/>
-    <path d="M150 210 C 158 175 180 150 205 140" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="16" stroke-linecap="round"/>
-    <path d="M330 150 C 362 162 388 190 398 222" fill="none" stroke="#fff" stroke-opacity="0.4" stroke-width="16" stroke-linecap="round"/>
+  <g transform="translate(256 256) scale(0.95) translate(-256 -256)">
+    <use href="#s" fill="url(#teams)"/>
+    <use href="#s" fill="url(#pick)" transform="rotate(180 256 256)"/>
+    <circle class="drop" cx="372" cy="98" r="9" fill="#c6ff3d"/>
+    <circle cx="140" cy="414" r="9" fill="#8b5cff"/>
+    <path d="M128 250 C 130 205 150 170 182 145" fill="none" stroke="#fff" stroke-opacity="0.4" stroke-width="13" stroke-linecap="round"/>
+    <path d="M300 160 C 318 148 338 152 350 166" fill="none" stroke="#fff" stroke-opacity="0.4" stroke-width="13" stroke-linecap="round"/>
   </g>
 </svg>
